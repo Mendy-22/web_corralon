@@ -1,0 +1,82 @@
+<!DOCTYPE html> <!-- Define el tipo de documento como HTML5 -->
+<html lang="es"> <!-- Indica que el idioma principal del contenido es español -->
+<head>
+    <meta charset="UTF-8"> <!-- Configura la codificación de caracteres (UTF-8 soporta acentos y ñ) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace que la página sea responsive en móviles -->
+    <title>Login - Gran Unión</title> <!-- Título que aparece en la pestaña del navegador -->
+
+    <!-- Enlace al archivo de estilos CSS -->
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Enlaces a los archivos JavaScript -->
+    <script src="catalogo.js" defer></script> <!-- defer: carga el script después de que el HTML esté listo -->
+    <script src="logica.js" defer></script>
+</head>
+<body>
+    <!-- Encabezado de la página -->
+    <header>
+        <!-- Logo que lleva al inicio -->
+        <a href="index.html" class="logo-link">
+            <img src="imagen/logo/gran-union-logo.png" alt="Logo Gran Unión" class="logo logo-seccion" />
+        </a>
+
+        <!-- Menú de navegación -->
+        <nav>
+            <ul class="menu">
+                <li><a href="traditional.html">Construcción Tradicional</a></li>
+                <li><a href="seco.html">Construcción en Seco</a></li>
+                <li><a href="login.html" class="activo">Login / Carrito</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <main>
+        <section id="login"> <!-- Sección específica para el login -->
+            <h2>Iniciar sesión</h2>
+
+            <!-- Formulario de login -->
+            <!-- Al enviar el formulario se ejecuta la función loginUsuario() definida en logica.js -->
+            <form onsubmit="loginUsuario(event)">
+                <!-- Campo para ingresar el email -->
+                <label for="email">Email:</label>
+                <input type="email" id="email" required autocomplete="email" />
+
+                <!-- Campo para ingresar la contraseña -->
+                <label for="password">Contraseña:</label>
+                <!-- minlength=4 asegura que el navegador no permita menos de 4 caracteres -->
+                <input type="password" id="password" required minlength="4" autocomplete="current-password"/>
+                <p id="requisitos-password" class="requisitos-password"></p>
+
+                <!-- Botón para enviar el formulario -->
+                <button type="submit">Ingresar</button>
+            </form>
+
+            <!-- Contenedor para mostrar mensajes de validación (éxito o error) -->
+            <div id="mensajes"></div>
+        </section>
+    </main>
+
+    <!-- Pie de página -->
+    <footer>
+        <p>&copy; 2025 Gran Unión</p>
+    </footer>
+
+    <!-- Script para mostrar mensaje de bienvenida si el usuario ya está logueado -->
+    <script>
+    const usuario = localStorage.getItem("usuarioLogueado");
+    if (usuario) {
+        const toast = document.createElement("div");
+        toast.className = "toast success";
+        toast.textContent = `Bienvenido nuevamente, ${usuario}`;
+        document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add("show"), 100);
+            setTimeout(() => {
+            toast.classList.remove("show");
+            document.body.removeChild(toast);
+        }, 3000);
+    }
+</script>
+</body>
+</html>

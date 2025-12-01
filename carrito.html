@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Carrito de Compras - Gran Unión</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="logica.js" defer></script>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo-link">
+            <img src="imagen/logo/gran-union-logo.png" alt="Logo Gran Unión" class="logo logo-seccion" />
+        </a>
+    <nav>
+        <ul class="menu">
+            <li><a href="traditional.html">Construcción Tradicional</a></li>
+            <li><a href="seco.html">Construcción en Seco</a></li>
+            <li><a href="login.html">Login / Carrito</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <!-- Aquí se muestra el contenido del carrito -->
+    <section id="carrito"></section>
+
+    <!-- Botones de accion -->
+    <div class="carrito-controles">
+        <button id="btn-vaciar">Vaciar carrito</button>
+    </div>    
+</main>
+
+<section id="envio">
+    <h2 class="envio-titulo">Datos de envío</h2>
+        <form id="form-envio" onsubmit="finalizarCompra(event)">
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" required />
+
+        <label for="entreCalles">Entre calles:</label>
+        <input type="text" id="entreCalles" required />
+
+        <label for="ciudad">Ciudad / Localidad:</label>
+        <input type="text" id="ciudad" required />
+
+        <button type="submit" class="finalizar">🟢 Finalizar compra</button>
+    </form>
+</section>
+
+<footer>
+    <p>&copy; 2025 Gran Unión</p>
+
+</footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    mostrarCarrito(); // Llama a la función principal
+});
+</script>
+</body>
+</html>

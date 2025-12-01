@@ -1,0 +1,515 @@
+/* ===========================
+    Catálogo de productos
+   =========================== */
+#catalogo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+article.producto {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+article.producto:hover { transform: scale(1.03); }
+article.producto img { max-width: 100%; border-radius: 6px; margin-bottom: 1rem; }
+article.producto h3 { font-size: 1.2rem; color: #333; margin-bottom: 0.5rem; }
+article.producto p { font-size: 0.95rem; color: #555; margin: 0.5rem 0; }
+article.producto button {
+    background-color: #007bff; color: white; border: none;
+    padding: 0.6rem 1.2rem; border-radius: 5px; cursor: pointer;
+    font-weight: bold; margin-top: 0.5rem; transition: background-color 0.2s ease;
+}
+article.producto button:hover { background-color: #0056b3; }
+
+/* ===========================
+    Fondo y estructura general
+   =========================== */
+body {
+    background: url("imagen/fondos/construccion-principal.jpg") no-repeat center center fixed;
+    background-size: cover;
+    font-family: "Poppins", sans-serif;
+    color: white;
+    margin: 0;
+    padding: 0;
+}
+main, header, footer {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 2rem;
+    border-radius: 10px;
+    margin: 2rem;
+}
+
+/* ===========================
+    Header centrado (inicio)
+   =========================== */
+.header-inicio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    margin: 2rem;
+}
+.logo-inicio {
+    height: 540px;
+    max-width: 100%;
+    object-fit: contain;
+    margin-bottom: 2rem;
+}
+.menu-inicio {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.menu-inicio li a {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.menu-inicio li a:hover,
+.menu-inicio li a.activo {
+    background-color: #ffd700;
+    color: #000;
+    transform: scale(1.05);
+}
+.menu-inicio li a.activo { pointer-events: none; }
+
+/* ===========================
+    Header en secciones
+   =========================== */
+.logo-seccion { height: 80px; }
+header:not(.header-inicio) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.menu {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+.menu li a {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+.menu li a:hover,
+.menu li a.activo {
+    background-color: #ffd700;
+    color: #000;
+    transform: scale(1.05);
+}
+.menu li a.activo { pointer-events: none; }
+
+/* ===========================
+    Carrito
+   =========================== */
+#carrito {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+.card-carrito {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.carrito-imagen { width: 120px; border-radius: 6px; object-fit: cover; }
+.carrito-info h3 { margin: 0 0 5px; font-size: 18px; color: #333; }
+.carrito-info p { font-size: 14px; color: #555; margin: 3px 0; }
+.carrito-acciones button {
+    margin-right: 8px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    background: #0078d7;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.carrito-acciones button:hover { background: #005a9e; }
+.carrito-total {
+    text-align: right;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* ===========================
+    Botones globales del carrito
+   =========================== */
+.carrito-controles {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    max-width: 800px;
+    margin: auto;
+}
+#btn-vaciar { background: #d9534f; color: white; }
+#btn-vaciar:hover { background: #c9302c; }
+#btn-finalizar { background: #5cb85c; color: white; }
+#btn-finalizar:hover { background: #449d44; }
+
+/* ===========================
+    Toast moderno (login y carrito)
+   =========================== */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #2c3e50;
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 9999;
+}
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+.toast.success { background: #27ae60; }
+.toast.error { background: #e74c3c; }
+
+/* Estilo de los requisitos de password */
+
+.requisitos-password {
+    font-size: 0.9rem;
+    color: #ffd700;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+/* ===========================
+    Formulario de envío
+   =========================== */
+#envio {
+    background: rgba(255,255,255,0.9);
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 2rem auto;
+    color: #333;
+}
+#envio h2 { font-size: 1.8rem; margin-bottom: 1rem; }
+#envio form { display: flex; flex-direction: column; gap: 1rem; }
+#envio input {
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+#envio button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s ease;
+}
+#envio button:hover { background: #0056b3; }
+
+/* ===========================
+    Redes sociales en el footer
+   =========================== */
+footer .redes {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+footer .redes img {
+    width: 36px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+footer .redes img:hover {
+    transform: scale(1.2);
+}
+
+/* Boton whatsapp */
+
+.whatsapp {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.whatsapp img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: transform 0.2s ease;
+}
+
+.whatsapp img:hover {
+    transform: scale(1.1);
+}
+
+#envio {
+    background-image: url("imagen/logo/gran-union.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    padding: 4rem 1rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#envio::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 0;
+}
+
+.envio-titulo {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+#form-envio {
+    position: relative;
+    z-index: 1;
+    background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 100%;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+#form-envio label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+#form-envio input {
+    width: 100%;
+    padding: 0.6rem;
+    margin-bottom: 1rem;
+    border: none;
+    border-radius: 6px;
+    background-color: rgba(255,255,255,0.8);
+    color: #333;
+    font-size: 1rem;
+}
+
+#form-envio button.finalizar {
+    background-color: #25d366;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#form-envio button.finalizar:hover {
+    background-color: #1da851;
+}
+
+/* ===========================
+    Responsive completo
+   =========================== */
+@media (max-width: 768px) {
+    .header-inicio {
+        padding: 1rem;
+        margin: 1rem;
+    }
+
+    .logo-inicio {
+        height: 220px;
+        margin-bottom: 1rem;
+    }
+
+    .menu-inicio {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .menu-inicio li a {
+        width: 80%;
+        text-align: center;
+}
+
+    main, header, footer {
+        padding: 1rem;
+        margin: 1rem;
+}
+
+    #catalogo {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+}
+
+    .card-carrito {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+}
+
+    .carrito-imagen {
+        width: 100%;
+        max-width: 300px;
+}
+
+    .carrito-controles {
+        flex-direction: column;
+        align-items: center;
+}
+
+    #envio {
+        padding: 1rem;
+        margin: 1rem auto;
+}
+
+    footer .redes {
+        flex-direction: row;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+}
+}
+
+@media (max-width: 768px) {
+  /* Logo y header */
+    .logo-inicio { height: 220px; margin-bottom: 1rem; }
+    .logo-seccion { height: 60px; }
+
+    .header-inicio, header {
+        flex-direction: column;
+        align-items: center;
+        padding: 1rem;
+        margin: 1rem;
+}
+
+    .menu, .menu-inicio {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+        margin-top: 1rem;
+}
+
+    .menu li a, .menu-inicio li a {
+        width: 80%;
+        text-align: center;
+}
+
+  /* Catálogo */
+    #catalogo {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+}
+
+    article.producto {
+        padding: 1rem;
+        margin: 0 auto;
+}
+
+  /* Login */
+    #login form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-width: 400px;
+        margin: 0 auto;
+}
+
+  /* Carrito */
+    .card-carrito {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+}
+
+    .carrito-imagen {
+        width: 100%;
+        max-width: 300px;
+}
+
+    .carrito-controles {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+}
+
+    .carrito-total {
+        text-align: center;
+        margin-top: 1rem;
+}
+
+  /* Footer redes */
+    footer .redes {
+        flex-direction: row;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+}
+}
+
+@media (max-width: 480px) {
+    .logo-inicio { height: 180px; }
+    .menu li a, .menu-inicio li a {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+}
+
+    .toast {
+        top: 10px;
+        right: 10px;
+        padding: 10px 16px;
+        font-size: 0.9rem;
+}
+}

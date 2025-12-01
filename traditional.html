@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos Tradicionales - Gran Unión</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="catalogo.js"></script>
+    <script src="logica.js"></script>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo-link">
+            <img src="imagen/logo/gran-union-logo.png" alt="Logo Gran Unión" class="logo logo-seccion" />
+        </a>
+    <nav>
+        <ul class="menu">
+            <li><a href="traditional.html" class="activo">Construcción Tradicional</a></li>
+            <li><a href="seco.html">Construcción en Seco</a></li>
+            <li><a href="login.html">Login / Carrito</a></li>
+        </ul>
+    </nav>
+</header>
+    <main>
+        <section id="catalogo" >
+            <!-- Aca se insertan los productos con JavaScript-->
+        </section>
+    </main>
+
+    <footer>
+        <p> &copy; 2025 Gran Unión</p>
+    </footer>
+
+    <script>
+    //Al cargar la pagina, mostramos los productos Tradicionales
+    document.addEventListener("DOMContentLoaded",() =>{
+        mostrarProductos(productosTradicionales, "tradicional");
+    });
+    </script>
+
+</body>
+</html>
