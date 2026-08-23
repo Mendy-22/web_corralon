@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>Carrito de Compras - Gran Unión</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="catalogo.js" defer></script>
     <script src="logica.js" defer></script>
 </head>
 <body>
@@ -55,19 +56,14 @@
 </footer>
 
 <script>
-    // Esperamos a que el DOM esté listo Y logica.js (con defer) haya cargado
     document.addEventListener("DOMContentLoaded", () => {
-        // protegerPagina() redirige al login si no hay token
+        actualizarMenu();
+
         if (protegerPagina()) {
             mostrarBarraUsuario("barra-sesion");
             mostrarCarrito();
         }
     });
 </script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", actualizarMenu);
-</script>
-
 </body>
 </html>

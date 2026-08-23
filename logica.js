@@ -249,10 +249,13 @@ async function loginUsuario(event) {
     }
 }
 
-// Finalizar compra y mostrar mensaje.
+// ===============================
+// Finalizar compra
+// ===============================
 function finalizarCompra(event) {
     event.preventDefault();
 
+    // Leemos los datos de envío del formulario
     const direccion = document.getElementById("direccion").value.trim();
     const entreCalles = document.getElementById("entreCalles").value.trim();
     const ciudad = document.getElementById("ciudad").value.trim();
@@ -260,15 +263,27 @@ function finalizarCompra(event) {
     if (!direccion || !entreCalles || !ciudad) {
         mostrarToast("Por favor completá todos los campos de envío.", "error");
         return;
-}
+    }
+
+    // Verificamos que el carrito no esté vacío antes de confirmar
+    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+    if (carrito.length === 0) {
+        mostrarToast("Tu carrito está vacío.", "error");
+        return;
+    }
 
     mostrarToast("¡Gracias por tu compra! En breve recibirás la confirmación.", "success");
 
-  // Si querés, podés vaciar el carrito acá
-  // carrito = [];
-  // actualizarCarrito();
-}
+    // Vaciamos el carrito guardado
+    localStorage.removeItem("carrito");
 
+    // Redibujamos el carrito (ahora vacío)
+    mostrarCarrito();
+
+    // Limpiamos el formulario de envío
+    document.getElementById("form-envio").reset();
+}
 
 // ===============================
 // Registro de usuario nuevo
