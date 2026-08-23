@@ -174,57 +174,79 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// ===============================
-// Login con validaciones modernas
-// ===============================
-function loginUsuario(event) {
-  event.preventDefault(); // Evita que el formulario recargue la página
 
-  // Capturamos los valores ingresados
+// "async" indica que la función hace tareas que tardan (esperar al servidor).
+// Solo dentro de una función async se puede usar "await".
+async function loginUsuario(event) {
+    // Evita que el formulario recargue la página al enviarse
+    event.preventDefault();
+
+    // Capturamos los valores que escribió el usuario.
+    // .trim() borra espacios en blanco al principio y al final
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
 
-  // Capturamos el elemento donde se mostrará el aviso de requisitos
-    const requisitos = document.getElementById("requisitos-password");
-
-  // Mostramos el aviso siempre que el usuario interactúe con el formulario
-    requisitos.textContent = "La contraseña debe tener al menos una letra mayúscula y un carácter especial.";
-
-  // Validación: campos vacíos
+    // Validación mínima del lado del cliente: que no estén vacíos.
+    // Las reglas de seguridad reales las valida el backend.
     if (!email || !password) {
-        mostrarToast("Completa todos los campos.", "error");
-        return;
-}
+        mostrarToast("Completá todos los campos.", "error");
+        return; // corta la función acá, no sigue
+    }
 
-  // Validación: mínimo de caracteres
-    if (password.length < 4) {
-        mostrarToast("La contraseña debe tener al menos 4 caracteres.", "error");
-        return;
-}
+    // try/catch: si el servidor está apagado o falla la red,
+    // el error se captura abajo en vez de romper la página
+    try {
+        // fetch() envía la petición HTTP al backend.
+        // "await" pausa la función hasta que llegue la respuesta.
+        const respuesta = await fetch(`${API_URL}/api/auth/login`, {
+            // POST porque enviamos datos sensibles en el cuerpo, no en la URL
+            method: "POST",
 
-  // Validación: al menos una mayúscula y un carácter especial
-    const tieneMayuscula = /[A-Z]/.test(password);
-    const tieneEspecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            // Le avisamos al servidor que le mandamos JSON
+            headers: { "Content-Type": "application/json" },
 
-    if (!tieneMayuscula || !tieneEspecial) {
-        requisitos.textContent = " La contraseña debe incluir una letra mayúscula y un carácter especial.";
-        mostrarToast("La contraseña no cumple los requisitos.", "error");
-        return;
-}
+            // JSON.stringify convierte el objeto JavaScript en texto JSON.
+            // { email, password } es atajo de { email: email, password: password }
+            body: JSON.stringify({ email, password })
+        });
 
-  // Si todo está bien, borramos el aviso
-    requisitos.textContent = "";
+        // respuesta.ok es true si el código HTTP es 200-299.
+        // Si el backend devolvió 401 (credenciales inválidas), entra acá.
+        if (!respuesta.ok) {
+            // Leemos el JSON del error para mostrar el mensaje que mandó la API
+            const error = await respuesta.json();
+            // error.detail es el texto del HTTPException del backend.
+            // El "||" pone un mensaje por defecto si viniera vacío
+            mostrarToast(error.detail || "Email o contraseña incorrectos", "error");
+            return;
+        }
 
-  // Guardamos el usuario en localStorage
-    localStorage.setItem("usuarioLogueado", email);
+        // Si llegamos acá, el login fue exitoso.
+        // .json() convierte la respuesta de texto a objeto JavaScript
+        const datos = await respuesta.json();
 
-  // Mostramos mensaje de éxito
-    mostrarToast("Login exitoso. Redirigiendo al carrito...", "success");
+        // Guardamos el token en localStorage.
+        // localStorage PERSISTE al navegar entre páginas y al cerrar el navegador,
+        // a diferencia de sessionStorage. Esto resuelve la sesión que se perdía.
+        localStorage.setItem("token", datos.access_token);
 
-  // Redirigimos después de 1 segundo
-    setTimeout(() => {
-    window.location.href = "carrito.html";
-}, 1000);
+        // Guardamos también el nombre, solo para mostrarlo en pantalla
+        localStorage.setItem("usuarioLogueado", datos.usuario.nombre);
+
+        mostrarToast(`Bienvenido ${datos.usuario.nombre}. Redirigiendo...`, "success");
+
+        // Esperamos 1 segundo para que el usuario alcance a leer el toast,
+        // y recién ahí redirigimos al carrito
+        setTimeout(() => {
+            window.location.href = "carrito.html";
+        }, 1000);
+
+    } catch (error) {
+        // Este catch se activa si el servidor no responde (apagado, sin red).
+        // Los detalles técnicos van a la consola, no a la cara del usuario
+        console.error("Error de conexión:", error);
+        mostrarToast("No se pudo conectar con el servidor.", "error");
+    }
 }
 
 // Finalizar compra y mostrar mensaje.
@@ -245,4 +267,145 @@ function finalizarCompra(event) {
   // Si querés, podés vaciar el carrito acá
   // carrito = [];
   // actualizarCarrito();
+}
+
+
+// ===============================
+// Registro de usuario nuevo
+// ===============================
+
+// async porque espera la respuesta del servidor al crear la cuenta
+async function registrarUsuario(event) {
+    // Evita que el formulario recargue la página al enviarse
+    event.preventDefault();
+
+    // Capturamos los tres campos del formulario de registro.
+    // Los id llevan el prefijo "reg-" para no chocar con los del login,
+    // que están en la misma página (email y password ya existen arriba)
+    const nombre = document.getElementById("reg-nombre").value.trim();
+    const email = document.getElementById("reg-email").value.trim();
+    const password = document.getElementById("reg-password").value.trim();
+
+    // Validación: ningún campo vacío
+    if (!nombre || !email || !password) {
+        mostrarToast("Completá todos los campos.", "error");
+        return; // corta la función, no envía nada al servidor
+    }
+
+    // Validación de longitud mínima.
+    // Es una comodidad para el usuario (aviso inmediato, sin esperar al servidor),
+    // pero NO es seguridad: cualquiera puede saltearla desde la consola.
+    // La validación que cuenta siempre es la del backend.
+    if (password.length < 6) {
+        mostrarToast("La contraseña debe tener al menos 6 caracteres.", "error");
+        return;
+    }
+
+    // try/catch para capturar fallos de red o servidor apagado
+    try {
+        // Enviamos los datos al endpoint de registro.
+        // Misma estructura que el login: method, headers y body
+        const respuesta = await fetch(`${API_URL}/api/auth/registro`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            // Los tres campos deben coincidir EXACTO con el schema
+            // UsuarioRegistro del backend (nombre, email, password)
+            body: JSON.stringify({ nombre, email, password })
+        });
+
+        // Si el backend devolvió un error (por ejemplo 400 "Ese email ya
+        // está registrado", o 422 si el JSON no cumple el schema)
+        if (!respuesta.ok) {
+            const error = await respuesta.json();
+            mostrarToast(error.detail || "No se pudo registrar", "error");
+            return;
+        }
+
+        // Registro exitoso.
+        // Ojo: acá NO guardamos ningún token, porque el endpoint de registro
+        // no devuelve uno — solo crea la cuenta. El usuario tiene que
+        // iniciar sesión después para obtener su JWT.
+        mostrarToast("Cuenta creada. Ya podés iniciar sesión.", "success");
+
+        // .reset() limpia todos los campos del formulario,
+        // así queda listo por si quiere registrar otra cuenta
+        document.getElementById("form-registro").reset();
+
+    } catch (error) {
+        // Fallo de conexión: servidor caído o sin red
+        console.error("Error de conexión:", error);
+        mostrarToast("No se pudo conectar con el servidor.", "error");
+    }
+}
+
+// ===============================
+// Manejo de sesión (JWT)
+// ===============================
+
+// Devuelve el token guardado, o null si no hay ninguno.
+// Es un atajo para no repetir localStorage.getItem("token") por todos lados
+function obtenerToken() {
+    return localStorage.getItem("token");
+}
+
+// Devuelve true si hay un token guardado.
+// OJO: esto solo verifica que EXISTA un token, no que sea válido.
+// La validación real la hace el backend cuando recibe el token.
+// Acá es solo para decidir qué mostrar en pantalla.
+function estaLogueado() {
+    return obtenerToken() !== null;
+}
+
+// Cierra la sesión: borra el token y los datos del usuario
+function cerrarSesion() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuarioLogueado");
+
+    mostrarToast("Sesión cerrada", "success");
+
+    // Redirige al login después de 1 segundo
+    setTimeout(() => {
+        window.location.href = "login.html";
+    }, 1000);
+}
+
+// Protege una página: si no hay sesión, redirige al login.
+// Se llama al principio de las páginas que requieren estar logueado.
+function protegerPagina() {
+    if (!estaLogueado()) {
+        mostrarToast("Necesitás iniciar sesión para continuar", "error");
+
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 1500);
+
+        return false; // avisa que NO está logueado
+    }
+    return true; // está logueado, puede seguir
+}
+
+// ===============================
+// Barra de usuario en el carrito
+// ===============================
+
+// Dibuja un saludo con el nombre del usuario y un botón para cerrar sesión.
+// Recibe el id del contenedor donde insertarlo
+function mostrarBarraUsuario(idContenedor) {
+    const contenedor = document.getElementById(idContenedor);
+
+    // Si el contenedor no existe en esta página, no hacemos nada
+    if (!contenedor) return;
+
+    // Leemos el nombre que guardamos al hacer login
+    const nombre = localStorage.getItem("usuarioLogueado");
+
+    if (!nombre) return;
+
+    // Insertamos el saludo y el botón de salir
+    contenedor.innerHTML = `
+        <div class="barra-usuario">
+            <span>Hola, <strong>${nombre}</strong></span>
+            <button onclick="cerrarSesion()">Cerrar sesión</button>
+        </div>
+    `;
 }

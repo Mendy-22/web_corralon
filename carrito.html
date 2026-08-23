@@ -21,6 +21,9 @@
 </header>
 
 <main>
+
+    <!-- Barra con el nombre del usuario y botón de salir -->
+    <div id="barra-sesion"></div>
     <!-- Aquí se muestra el contenido del carrito -->
     <section id="carrito"></section>
 
@@ -56,5 +59,15 @@
     mostrarCarrito(); // Llama a la función principal
 });
 </script>
+
+    <script>
+        // Primero verificamos que haya sesión activa.
+        // Si no la hay, protegerPagina() redirige al login y devuelve false
+        if (protegerPagina()) {
+            // Solo si está logueado dibujamos la barra y el carrito
+            mostrarBarraUsuario("barra-sesion");
+            mostrarCarrito();
+        }
+    </script>
 </body>
 </html>
