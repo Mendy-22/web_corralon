@@ -80,7 +80,7 @@
 
     <!-- Script para mostrar mensaje de bienvenida si el usuario ya está logueado -->
     <script>
-    const usuario = localStorage.getItem("usuarioLogueado");
+    const usuario = localStorage.getItem("token") ? localStorage.getItem("usuarioLogueado") : null;
     if (usuario) {
         const toast = document.createElement("div");
         toast.className = "toast success";

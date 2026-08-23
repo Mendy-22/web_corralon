@@ -55,19 +55,19 @@
 </footer>
 
 <script>
+    // Esperamos a que el DOM esté listo Y logica.js (con defer) haya cargado
     document.addEventListener("DOMContentLoaded", () => {
-    mostrarCarrito(); // Llama a la función principal
-});
-</script>
-
-    <script>
-        // Primero verificamos que haya sesión activa.
-        // Si no la hay, protegerPagina() redirige al login y devuelve false
+        // protegerPagina() redirige al login si no hay token
         if (protegerPagina()) {
-            // Solo si está logueado dibujamos la barra y el carrito
             mostrarBarraUsuario("barra-sesion");
             mostrarCarrito();
         }
-    </script>
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", actualizarMenu);
+</script>
+
 </body>
 </html>

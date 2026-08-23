@@ -409,3 +409,28 @@ function mostrarBarraUsuario(idContenedor) {
         </div>
     `;
 }
+
+// ===============================
+// Menú dinámico según la sesión
+// ===============================
+
+// Ajusta el último item del menú según si hay sesión activa:
+// - Sin sesión: "Login" que lleva a login.html
+// - Con sesión: "Mi carrito" que lleva directo a carrito.html
+function actualizarMenu() {
+    // Buscamos el enlace que apunta a login.html en el menú
+    const enlace = document.querySelector('.menu a[href="login.html"]');
+
+    // Si esta página no tiene ese enlace, no hacemos nada
+    if (!enlace) return;
+
+    if (estaLogueado()) {
+        // Hay token: el enlace lleva al carrito
+        enlace.href = "carrito.html";
+        enlace.textContent = "Mi carrito";
+    } else {
+        // Sin token: se queda como estaba
+        enlace.href = "login.html";
+        enlace.textContent = "Login";
+    }
+}
